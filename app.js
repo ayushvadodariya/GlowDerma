@@ -1,9 +1,18 @@
 import express from "express";
+import { rateLimit } from 'express-rate-limit'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+    message: "Sorry you have exhausted you plan",
+});
+
+app.use(limiter)
 app.use(express.json());
+app.use(express.static("assets"));
 
 let products= [
   { id: 11, name: "Retinol Serum", price: 1200, availableQty: 50 },
@@ -86,6 +95,8 @@ app.get("/cart", (req, res)=>{
 
 app.post("/cart", (req, res)=>{
     try{
+
+        console.log(req.body);
         const requireFeild = ["id", "name", "price", "qty"];
         const missingFeild = validateFeild(requireFeild, req.body);
 
