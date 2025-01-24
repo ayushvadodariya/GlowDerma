@@ -12,7 +12,9 @@ const limiter = rateLimit({
 
 app.use(limiter)
 app.use(express.json());
-app.use(express.static("assets"));
+
+app.use("/assets",express.static('./public'));
+
 
 let products= [
   { id: 11, name: "Retinol Serum", price: 1200, availableQty: 50 },
